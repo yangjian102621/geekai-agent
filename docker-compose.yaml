@@ -1,0 +1,46 @@
+services:
+  # mysql
+  geekai-mysql:
+    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/mysql:8.0.33
+    container_name: geekai-agent-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=mhSCk0NheGhmtsha
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./conf/mysql/my.cnf:/etc/mysql/my.cnf
+      - ./data/mysql/data:/var/lib/mysql
+      - ./logs/mysql:/var/log/mysql
+      - ./data/mysql/init.d:/docker-entrypoint-initdb.d/
+
+  # redis
+  geekai-redis:
+    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/redis:6.0.6
+    restart: always
+    container_name: geekai-agent-redis
+    command: redis-server --requirepass mhSCk0NheGhmtsha
+    volumes:
+      - ./data/redis:/data
+    ports:
+      - "6381:6379"
+
+  geekai-agent:
+    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/geekai-agent:v1.0.0-amd64
+    container_name: geekai-agent
+    restart: always
+    ports:
+      - "6789:5678"
+    depends_on:
+      - geekai-mysql
+      - geekai-redis
+    volumes:
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - ./conf/config.toml:/var/www/app/config.toml
+      - ./logs:/var/www/app/logs
+      - ./certs:/var/www/app/certs
+    environment:
+      - LOG_LEVEL=info
+      - CONFIG_FILE=config.toml
+# entrypoint: ["./wait-for-it.sh", "geekai-mysql:3306", "--", "./geekai-agent"]

@@ -1,0 +1,70 @@
+Listen = "0.0.0.0:5678"
+ProxyURL = ""
+MysqlDns = "root:mhSCk0NheGhmtsha@tcp(geekai-agent-mysql:3306)/geekai_agent?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Local"
+
+[Session]
+  SecretKey = "m0cjm3gsuw9jk73np1ni7r42koilybjcndlycjdmq7za3pbqn7w12fyok5pqh6q5"
+  MaxAge = 8640000
+
+[AdminSession]
+  SecretKey = "wr1uzwz2meai4z9j0e0tsyf6x523ui6zpnyaim4x2x37meakv13349llqpipyk40"
+  MaxAge = 8640000
+
+[Redis]
+  Host = "geekai-agent-redis"
+  Port = 6379
+  Password = "mhSCk0NheGhmtsha"
+  DB = 0
+
+[ApiConfig]
+  ApiURL = "https://sapi.geekai.me"
+  AppId = ""
+  Token = ""
+
+[SMS]
+  Active = "Bao"
+  [SMS.Ali]
+    AccessKey = ""
+    AccessSecret = ""
+    Product = "Dysmsapi"
+    Domain = "dysmsapi.aliyuncs.com"
+    Sign = "飞行的蜗牛"
+    CodeTempId = "SMS_281460317"
+  [SMS.Bao]
+    Username = ""
+    Password = ""
+    Domain = "api.smsbao.com"
+    Sign = "【极客学长】"
+    CodeTemplate = "您的验证码是{code}。5分钟有效，若非本人操作，请忽略本短信。"
+
+[OSS]
+  Active = "QiNiu"
+  [OSS.QiNiu]
+    Zone = "z2"
+    # 下面密钥信息请到 https://portal.qiniu.com/developer/user/key 获取
+    AccessKey = ""
+    AccessSecret = ""
+    Bucket = "" # 七牛云的存储空间名称
+    Domain = "" # 空间绑定的域名
+  [OSS.Minio] # Minio 搭建的配置请参考：https://docs.geekai.me/plus/config/oss.html#搭建-minio-存储服务
+      Endpoint = "ip:9000"
+      AccessKey = ""
+      AccessSecret = ""
+      Bucket = ""
+      UseSSL = false
+      Domain = "http://ip:9000"
+  [OSS.AliYun]
+    Endpoint = "oss-cn-hangzhou.aliyuncs.com"
+    # 阿里云API服务密钥信息请到 https://ram.console.aliyun.com/profile/access-keys 获取
+    AccessKey = ""
+    AccessSecret = ""
+    Bucket = ""
+    Domain = ""
+
+[SmtpConfig]
+  UseTls = true
+  Host = "smtp.163.com"
+  Port = 465
+  AppName = "GeekAI-Agent"
+  From = ""
+  Password = ""

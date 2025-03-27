@@ -36,23 +36,30 @@ services:
       timeout: 10s
       retries: 5
 
-  # GeekAI Agent 服务
-  geekai-agent:
-    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/geekai-agent:v1.0.0-amd64
-    container_name: geekai-agent
+  geek-agent-api:
+    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/geek-agent-api:v1.0.1-amd64
+    container_name: geek-agent-api
     restart: always
     ports:
       - "6789:6789"
-    depends_on:
-      geekai-mysql:
-        condition: service_healthy
-      geekai-redis:
-        condition: service_healthy
     volumes:
       - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
       - ./conf/config.toml:/var/www/app/config.toml
       - ./logs:/var/www/app/logs
-      - ./certs:/var/www/app/certs
     environment:
-      LOG_LEVEL: info
-      CONFIG_FILE: config.toml
+      - LOG_LEVEL=info
+      - CONFIG_FILE=config.toml
+
+    # 前端应用
+  geek-agent-web:
+    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/geek-agent-web:v1.0.1-amd64
+    container_name: geek-agent-web
+    restart: always
+    depends_on:
+      - geek-agent-api
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+      - ./conf/nginx/conf.d:/etc/nginx/conf.d
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf

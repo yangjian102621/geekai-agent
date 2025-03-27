@@ -1,4 +1,5 @@
 data/mysql/data
+.idea
 logs
 certs
 

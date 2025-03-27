@@ -1,8 +1,9 @@
+-- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- 主机： 127.0.0.1
--- 生成日期： 2025-01-18 11:37:09
+-- 生成日期： 2025-03-27 11:24:04
 -- 服务器版本： 8.0.33
 -- PHP 版本： 8.1.2-1ubuntu2.20
 
@@ -46,7 +47,7 @@ CREATE TABLE `geekai_admin_users` (
 --
 
 INSERT INTO `geekai_admin_users` (`id`, `username`, `password`, `salt`, `status`, `last_login_at`, `last_login_ip`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '6d17e80c87d209efb84ca4b2e0824f549d09fac8b2e1cc698de5bb5e1d75dfd0', 'mmrql75o', 1, 1737170930, '127.0.0.1', '2024-03-11 16:30:20', '2025-01-18 11:28:51');
+(1, 'admin', '6d17e80c87d209efb84ca4b2e0824f549d09fac8b2e1cc698de5bb5e1d75dfd0', 'mmrql75o', 1, 1740450502, '127.0.0.1', '2024-03-11 16:30:20', '2025-02-25 10:28:22');
 
 -- --------------------------------------------------------
 
@@ -126,8 +127,8 @@ CREATE TABLE `geekai_configs` (
 --
 
 INSERT INTO `geekai_configs` (`id`, `marker`, `config_json`) VALUES
-(1, 'system', '{\"title\":\"GeekAI 智能体\",\"slogan\":\"让每一个人都能用好AI\",\"admin_title\":\"GeekAgent 控制台\",\"logo\":\"/images/logo.png\",\"init_score\":123,\"daily_score\":456,\"invite_score\":789,\"enabled_register\":true,\"wechat_card_url\":\"/images/wx.png\",\"email_white_list\":[\"qq.com\",\"163.com\",\"gmail.com\",\"hotmail.com\",\"126.com\",\"outlook.com\",\"foxmail.com\",\"yahoo.com\",\"pvc123.com\"],\"app_id\":6,\"bot_avatar\":\"/images/avatar/assistant.png\",\"user_avatar\":\"/images/avatar/user.png\"}'),
-(3, 'notice', '{\"sd_neg_prompt\":\"\",\"mj_mode\":\"\",\"index_bg_url\":\"\",\"index_navs\":null,\"copyright\":\"\",\"mark_map_text\":\"\",\"enabled_verify\":false,\"email_white_list\":null,\"content\":\"## v4.1.6 更新日志\\n\\n* 功能新增：**支持OpenAI实时语音对话功能** Beta 版，目前没有做算力计费控制，目前只有 VIP 用户可以使用。\\n* 功能优化：优化MysQL容器配置文档，解决MysQL容器资源占用过高问题\\n* 功能新增：管理后台增加AI绘图任务管理，可在管理后台浏览和删除用户的绘图任务\\n* 功能新增：管理后台增加Suno和Luma任务管理功能\\n* Bug修复：修复管理后台删除兑换码报 404 错误\\n* 功能优化：优化充值产品定价逻辑，可以设置原价和优惠价，**升级当前版本之后请务必要到管理后台去重新设置一下产品价格，以免造成损失！！！\\n\\n注意：当前站点仅为开源项目 \\u003ca style=\\\"color: #F56C6C\\\" href=\\\"https://github.com/yangjian102621/geekai\\\" target=\\\"_blank\\\"\\u003eGeekAI-Plus\\u003c/a\\u003e 的演示项目，本项目单纯就是给大家体验项目功能使用。\\n\\u003cstrong style=\\\"color: #F56C6C\\\"\\u003e体验额度用完之后请不要在当前站点进行任何充值操作！！！\\u003c/strong\\u003e\\n\\u003cstrong style=\\\"color: #F56C6C\\\"\\u003e体验额度用完之后请不要在当前站点进行任何充值操作！！！\\u003c/strong\\u003e\\n\\u003cstrong style=\\\"color: #F56C6C\\\"\\u003e体验额度用完之后请不要在当前站点进行任何充值操作！！！\\u003c/strong\\u003e\\n 如果觉得好用你就花几分钟自己部署一套，没有API KEY 的同学可以去下面几个推荐的中转站购买：\\n1、\\u003ca href=\\\"https://api.chat-plus.net\\\" target=\\\"_blank\\\"\\n   style=\\\"font-size: 20px;color:#F56C6C\\\"\\u003ehttps://api.chat-plus.net\\u003c/a\\u003e\\n2、\\u003ca href=\\\"https://api.geekai.me\\\" target=\\\"_blank\\\"\\n   style=\\\"font-size: 20px;color:#F56C6C\\\"\\u003ehttps://api.geekai.me\\u003c/a\\u003e\\n支持MidJourney，GPT，Claude，Google Gemmi，以及国内各个厂家的大模型，现在有超级优惠，价格远低于 OpenAI 官方。关于中转 API 的优势和劣势请参考 [中转API技术原理](https://docs.geekai.me/config/chat/#%E4%B8%AD%E8%BD%ACapi%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86)。GPT-3.5，GPT-4，DALL-E3 绘图......你都可以随意使用，无需魔法。\\n接入教程： \\u003ca href=\\\"https://docs.geekai.me\\\" target=\\\"_blank\\\"\\n             style=\\\"font-size: 20px;color:#F56C6C\\\"\\u003ehttps://docs.geekai.me\\u003c/a\\u003e\\n本项目源码地址：\\u003ca href=\\\"https://github.com/yangjian102621/geekai\\\" target=\\\"_blank\\\"\\u003ehttps://github.com/yangjian102621/geekai\\u003c/a\\u003e\",\"updated\":true}');
+(1, 'system', '{\"title\":\"GeekAI 智能体\",\"slogan\":\"使用AI智能体，开启工作效率倍增时代。\",\"admin_title\":\"GeekAgent 控制台\",\"logo\":\"/images/logo.png\",\"init_score\":100,\"daily_score\":10,\"invite_score\":100,\"enabled_register\":true,\"wechat_card_url\":\"/images/wx.png\",\"email_white_list\":[\"163.com\",\"pvc123.com\"],\"app_id\":1,\"bot_avatar\":\"/images/avatar/assistant.png\",\"user_avatar\":\"/images/avatar/user.png\",\"license\":{\"name\":\"\",\"license\":\"\",\"mid\":\"\",\"active_at\":0,\"expired_at\":0,\"configs\":{\"user_num\":0,\"de_copy\":false}}}'),
+(3, 'notice', '{\"license\":{\"name\":\"\",\"license\":\"\",\"mid\":\"\",\"active_at\":0,\"expired_at\":0,\"configs\":{\"user_num\":0,\"de_copy\":false}},\"content\":\"## Geek-Agent v1.0.1 更新日志\\n- **新增功能：** 在管理后台新增了应用复制功能。\\n- **功能优化：** 聊天输入框实现 Ctrl + Enter 换行。\\n- **功能优化：** 优化聊天对话信息数据结构，兼容 Coze 工作流调试信息输出。\\n- **功能优化：** 优化镜像打包脚本，web 端单独打包。\\n- **功能新增：** 新增本地文件上传支持。\\n- **功能新增：** 管理后台新增网站公告管理。\\n- **功能新增：** 允许管理员关闭前端注册功能，只允许通过管理后台添加用户。\\n- **功能新增：** 实现大模型 API 和 Coze API 的终止生成的功能。\\n- **功能新增：** 在聊天页面显示网站公告。\\n- **功能新增：** 支持 DeekSeek 推理模型官方原生API，不需要 oneAPI 转发。\\n- **功能优化：** 使用 Coze 官方的 GO-SDK 来替换自己手撸的 Coze SDK。\\n- **功能新增：** 支持 Coze 的图片和文件上传，支持 OpenAI 大模型的图片上传。\\n\\n\\n项目介绍：[https://docs.geekai.me](https://docs.geekai.me/agent/)\\n部署教程：[https://docs.geekai.me/agent/install.html](https://docs.geekai.me/agent/install.html)\\n\\n注意：当前站点仅为 \\u003ca style=\\\"color: #F56C6C\\\" href=\\\"https://github.com/yangjian102621/geekai-agent\\\" target=\\\"_blank\\\"\\u003eGeek-Agent\\u003c/a\\u003e 的演示项目，单纯就是给大家体验项目功能使用。\\n 如果觉得好用你就花几分钟自己部署一套，没有API KEY 的同学可以去下面几个推荐的中转站购买：\\n\\n1、\\u003ca href=\\\"https://api.geekai.pro\\\" target=\\\"_blank\\\"\\n   style=\\\"font-size: 20px;color:#F56C6C\\\"\\u003ehttps://api.geekai.pro\\u003c/a\\u003e\\n2、\\u003ca href=\\\"https://api.geekai.me\\\" target=\\\"_blank\\\"\\n   style=\\\"font-size: 20px;color:#F56C6C\\\"\\u003ehttps://api.geekai.me\\u003c/a\\u003e\\n\\n支持MidJourney，OpenAI，Claude，DeepSeek，以及国内各个厂家的大模型，现在有超级优惠，价格远低于官方。\",\"updated\":true}');
 
 -- --------------------------------------------------------
 
@@ -169,6 +170,14 @@ CREATE TABLE `geekai_products` (
   `app_url` varchar(255) DEFAULT NULL COMMENT 'App跳转地址',
   `url` varchar(255) DEFAULT NULL COMMENT '跳转地址'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='会员套餐表';
+
+--
+-- 转存表中的数据 `geekai_products`
+--
+
+INSERT INTO `geekai_products` (`id`, `name`, `price`, `discount`, `days`, `power`, `enabled`, `sales`, `sort_num`, `created_at`, `updated_at`, `app_url`, `url`) VALUES
+(5, '100次点卡', 9.99, 6.99, 0, 100, 1, 0, 0, '2023-08-28 10:55:08', '2024-10-23 18:12:29', NULL, NULL),
+(6, '200次点卡', 19.90, 15.99, 0, 200, 1, 0, 0, '1970-01-01 08:00:00', '2024-10-23 18:12:36', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -241,10 +250,8 @@ CREATE TABLE `geekai_users` (
 --
 
 INSERT INTO `geekai_users` (`id`, `username`, `mobile`, `email`, `nickname`, `password`, `avatar`, `salt`, `scores`, `expired_time`, `status`, `last_login_at`, `vip`, `last_login_ip`, `openid`, `platform`, `created_at`, `updated_at`) VALUES
-(4, '18888888888', '18888888888', 'abc123@qq.com', '极客学长', 'c4a1188178c48afab68735ded98b71eb05b14f2990edf3bb98c4d94e5fd470b4', '/images/avatar/user.png', 'nnubmo94', 3570, 1734019200, 1, 1737162657, 0, '127.0.0.1', '', '', '2024-11-22 12:12:53', '2025-01-18 09:10:58'),
-(50, 'geekmaster', '18575670123', 'yangjian@123.com', '用户@199191', 'e3f5417a818899298f3e9dbba68850a2027c0d3f15f881553921879c12b1e8c5', '/images/avatar/user.png', '6w691hmg', 1234, 1734019200, 1, 0, 0, '', '', '', '2024-12-05 09:04:17', '2024-12-05 09:04:17'),
-(51, 'yangjian@pvc123.com', '', 'yangjian@pvc123.com', '用户@469083', '632d359bf3b1a29360c87292d708a215b722447f444485198615f8a5ebef695d', '/images/avatar/user.png', 'j6zzv3gq', 123, 0, 1, 0, 0, '', '', '', '2024-12-05 12:00:40', '2024-12-05 12:00:40'),
-(52, 'yangjian102621@gmail.com', '', 'yangjian102621@gmail.com', '用户@550657', '246545e5a2feefe1ef205d7f0a5324ab43d209cbdc8541a04b2bb38aa2d4760d', '/images/avatar/user.png', '8njlj81n', 123, 0, 1, 0, 0, '', '', '', '2024-12-05 14:12:51', '2024-12-05 14:12:51');
+(4, '18888888888', '18888888888', 'abc123@qq.com', '极客学长', 'c4a1188178c48afab68735ded98b71eb05b14f2990edf3bb98c4d94e5fd470b4', '/static/upload/2025/3/1742545587542812.png', 'nnubmo94', 3157, 0, 1, 1742703112, 0, '127.0.0.1', '', '', '2024-11-22 12:12:53', '2025-03-23 12:11:52'),
+(53, 'yangjian@pvc123.com', '', 'yangjian@pvc123.com', '用户@758924', 'f4604f8d48a43a5ebb72230a4c1309a6024dbce0aa4176539db24f56b4b9ae27', '/images/avatar/user.png', 'v4tv1ouv', 100, 0, 1, 0, 0, '', '', '', '2025-03-19 15:45:04', '2025-03-19 15:45:04');
 
 -- --------------------------------------------------------
 
@@ -383,7 +390,7 @@ ALTER TABLE `geekai_files`
 -- 使用表AUTO_INCREMENT `geekai_products`
 --
 ALTER TABLE `geekai_products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- 使用表AUTO_INCREMENT `geekai_redeems`
@@ -401,7 +408,7 @@ ALTER TABLE `geekai_score_logs`
 -- 使用表AUTO_INCREMENT `geekai_users`
 --
 ALTER TABLE `geekai_users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- 使用表AUTO_INCREMENT `geekai_user_login_logs`

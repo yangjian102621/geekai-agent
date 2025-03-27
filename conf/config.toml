@@ -1,5 +1,4 @@
 Listen = "0.0.0.0:6789"
-ProxyURL = ""
 MysqlDns = "root:mhSCk0NheGhmtsha@tcp(geekai-agent-mysql:3306)/geekai_agent?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Local"
 
 [Session]
@@ -38,7 +37,10 @@ MysqlDns = "root:mhSCk0NheGhmtsha@tcp(geekai-agent-mysql:3306)/geekai_agent?char
     CodeTemplate = "您的验证码是{code}。5分钟有效，若非本人操作，请忽略本短信。"
 
 [OSS]
-  Active = "QiNiu"
+  Active = "Local"
+  [OSS.Local]
+    BasePath = "./static/upload"
+    BaseURL = "/static/upload"
   [OSS.QiNiu]
     Zone = "z2"
     # 下面密钥信息请到 https://portal.qiniu.com/developer/user/key 获取

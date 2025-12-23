@@ -37,7 +37,7 @@ services:
       retries: 5
 
   geek-agent-api:
-    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/geek-agent-api:v1.0.4-amd64
+    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/geek-agent-api:v1.0.5-amd64
     container_name: geek-agent-api
     restart: always
     ports:
@@ -58,7 +58,7 @@ services:
 
     # 前端应用
   geek-agent-web:
-    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/geek-agent-web:v1.0.4-amd64
+    image: registry.cn-shenzhen.aliyuncs.com/geekmaster/geek-agent-web:v1.0.5-amd64
     container_name: geek-agent-web
     restart: always
     depends_on:

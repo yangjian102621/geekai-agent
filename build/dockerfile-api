@@ -1,0 +1,12 @@
+# GO api docker 镜像创建
+FROM registry.cn-hangzhou.aliyuncs.com/geekmaster/alpine:3.18.2
+
+MAINTAINER yangjian<yangjian102621@163.com>
+
+WORKDIR /var/www/app
+COPY ./api/bin/geek-agent /var/www/app
+
+EXPOSE 6789
+
+# 容器启动时执行的命令
+CMD ["./geek-agent"]

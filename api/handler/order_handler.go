@@ -1,0 +1,98 @@
+package handler
+
+// * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// * Copyright 2023 The Geek-AI Authors. All rights reserved.
+// * Use of this source code is governed by a Apache-2.0 license
+// * that can be found in the LICENSE file.
+// * @Author yangjian102621@163.com
+// * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+import (
+	"geekai/core"
+	"geekai/core/middleware"
+	"geekai/core/types"
+	"geekai/store/model"
+	"geekai/store/vo"
+	"geekai/utils"
+	"geekai/utils/resp"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+)
+
+type OrderHandler struct {
+	BaseHandler
+}
+
+func NewOrderHandler(app *core.AppServer, db *gorm.DB) *OrderHandler {
+	return &OrderHandler{BaseHandler: BaseHandler{App: app, DB: db}}
+}
+
+// RegisterRoutes 注册路由
+func (h *OrderHandler) RegisterRoutes() {
+	rg := h.App.Engine.Group("/api/order/")
+
+	// 需要用户登录的接口
+	rg.Use(middleware.UserAuthMiddleware(h.App.Config.Session.SecretKey, h.App.Redis))
+	{
+		rg.POST("list", h.List)
+		rg.GET("query", h.Query)
+	}
+}
+
+// List 订单列表
+func (h *OrderHandler) List(c *gin.Context) {
+	page := h.GetInt(c, "page", 1)
+	pageSize := h.GetInt(c, "page_size", 20)
+	userId := h.GetLoginUserId(c)
+	session := h.DB.Session(&gorm.Session{}).Where("user_id = ? AND status = ?", userId, types.OrderPaidSuccess)
+	var total int64
+	session.Model(&model.Order{}).Count(&total)
+	var items []model.Order
+	var list = make([]vo.Order, 0)
+	offset := (page - 1) * pageSize
+	res := session.Order("id DESC").Offset(offset).Limit(pageSize).Find(&items)
+	if res.Error == nil {
+		for _, item := range items {
+			var order vo.Order
+			err := utils.CopyObject(item, &order)
+			if err == nil {
+				order.Id = item.Id
+				order.CreatedAt = item.CreatedAt.Unix()
+				order.UpdatedAt = item.UpdatedAt.Unix()
+				payChannel, ok := types.PayChannel[item.Channel]
+				if !ok {
+					payChannel = item.PayWay
+				}
+				payWays, ok := types.PayWays[item.PayWay]
+				if !ok {
+					payWays = item.PayWay
+				}
+				order.ChannelName = payChannel
+				order.PayName = payWays
+				list = append(list, order)
+			} else {
+				logger.Error(err)
+			}
+		}
+	}
+	resp.SUCCESS(c, vo.NewPage(total, page, pageSize, list))
+}
+
+// Query 查询订单状态
+func (h *OrderHandler) Query(c *gin.Context) {
+	orderNo := h.GetTrim(c, "order_no")
+	var order model.Order
+	res := h.DB.Where("order_no = ?", orderNo).First(&order)
+	if res.Error != nil {
+		resp.ERROR(c, "Order not found")
+		return
+	}
+	// 解析订单 remark
+	var remark types.OrderRemark
+	err := utils.JsonDecode(order.Remark, &remark)
+	if err != nil {
+		resp.ERROR(c, "Order remark error")
+	}
+	resp.SUCCESS(c, gin.H{"status": order.Status, "credit": remark.Credit})
+}

@@ -1,0 +1,267 @@
+.login-page {
+  position: relative;
+  overflow: hidden;
+  // background: linear-gradient(-45deg, #4c0bce, #7c39ed, #9b6bff);
+  // background-size: 400% 400%;
+  background-image: url('@/assets/imgs/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  animation: gradientBG 15s ease infinite;
+
+  /* 气泡动画 */
+  .bubbles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+  }
+
+  .bubble {
+    position: absolute;
+    bottom: -100px;
+    width: 40px;
+    height: 40px;
+    background: rgba(var(--bs-primary-rgb), 0.5);
+    // background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: rise 10s infinite ease-in;
+  }
+
+  .bubble::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scale(0.25) translate(-70%, -70%);
+    background: radial-gradient(#ffffff, transparent);
+    border-radius: 50%;
+  }
+
+  /* 为每个气泡设置不同的动画延迟和位置 */
+  .bubble:nth-child(1) {
+    left: 10%;
+    animation-delay: 0s;
+    animation-duration: 12s;
+  }
+
+  .bubble:nth-child(2) {
+    left: 20%;
+    animation-delay: 1s;
+    animation-duration: 15s;
+    width: 60px;
+    height: 60px;
+  }
+
+  .bubble:nth-child(3) {
+    left: 35%;
+    animation-delay: 2s;
+    animation-duration: 11s;
+    width: 30px;
+    height: 30px;
+  }
+
+  .bubble:nth-child(4) {
+    left: 50%;
+    animation-delay: 3s;
+    animation-duration: 13s;
+    width: 45px;
+    height: 45px;
+  }
+
+  .bubble:nth-child(5) {
+    left: 65%;
+    animation-delay: 4s;
+    animation-duration: 14s;
+    width: 55px;
+    height: 55px;
+  }
+
+  .bubble:nth-child(6) {
+    left: 80%;
+    animation-delay: 5s;
+    animation-duration: 16s;
+    width: 35px;
+    height: 35px;
+  }
+
+  .bubble:nth-child(7) {
+    left: 90%;
+    animation-delay: 6s;
+    animation-duration: 12s;
+    width: 50px;
+    height: 50px;
+  }
+
+  .bubble:nth-child(8) {
+    left: 25%;
+    animation-delay: 7s;
+    animation-duration: 14s;
+    width: 40px;
+    height: 40px;
+  }
+
+  .bubble:nth-child(9) {
+    left: 45%;
+    animation-delay: 8s;
+    animation-duration: 15s;
+    width: 45px;
+    height: 45px;
+  }
+
+  .bubble:nth-child(10) {
+    left: 70%;
+    animation-delay: 9s;
+    animation-duration: 13s;
+    width: 35px;
+    height: 35px;
+  }
+
+  .bubble:nth-child(11) {
+    left: 15%;
+    animation-delay: 10s;
+    animation-duration: 16s;
+    width: 55px;
+    height: 55px;
+  }
+
+  .bubble:nth-child(12) {
+    left: 55%;
+    animation-delay: 11s;
+    animation-duration: 12s;
+    width: 40px;
+    height: 40px;
+  }
+
+  .bubble:nth-child(13) {
+    left: 85%;
+    animation-delay: 12s;
+    animation-duration: 14s;
+    width: 45px;
+    height: 45px;
+  }
+
+  .bubble:nth-child(14) {
+    left: 30%;
+    animation-delay: 13s;
+    animation-duration: 15s;
+    width: 50px;
+    height: 50px;
+  }
+
+  .bubble:nth-child(15) {
+    left: 75%;
+    animation-delay: 14s;
+    animation-duration: 13s;
+    width: 35px;
+    height: 35px;
+  }
+
+  @keyframes rise {
+    0% {
+      bottom: -100px;
+      transform: translateX(0) rotate(0);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translateX(100px) rotate(180deg);
+      opacity: 0.9;
+    }
+    100% {
+      bottom: 100vh;
+      transform: translateX(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .login-btn {
+    background: linear-gradient(45deg, #4c0bce, #7c39ed);
+    border: none;
+    padding: 0.6rem;
+  }
+
+  .btn-lg {
+    padding: 0.6rem 1rem;
+  }
+  .login-btn:hover:not(:disabled) {
+    background: linear-gradient(45deg, #4c0bce, #8d52ff);
+  }
+
+  .form-control {
+    border-width: 2px;
+  }
+
+  .form-control-lg {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .form-control:focus {
+    box-shadow: none;
+    border-color: var(--bs-primary);
+  }
+
+  .form-control::placeholder {
+    color: #bbbbbb; /* 你可以根据需要调整颜色 */
+    opacity: 1; /* 确保 placeholder 颜色不被覆盖 */
+  }
+
+  .form-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  .logo-section {
+    background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
+    border-radius: 15px;
+  }
+
+  .social-btn {
+    position: relative;
+    z-index: 2;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background: var(--bs-primary-light);
+    color: var(--bs-primary);
+  }
+
+  .social-btn:hover {
+    transform: translateY(-3px) scale(1.1);
+    //background: white;
+    // color: #4c0bce;
+    box-shadow: 0 0 10px rgba(var(--bs-primary-rgb), 0.5);
+  }
+
+  @media (max-width: 576px) {
+    .card-body {
+      padding: 2rem !important;
+    }
+
+    .social-btn {
+      width: 45px;
+      height: 45px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .bubble {
+      display: none;
+    }
+
+    .bubble:nth-child(1),
+    .bubble:nth-child(2),
+    .bubble:nth-child(3),
+    .bubble:nth-child(4),
+    .bubble:nth-child(5) {
+      display: block;
+    }
+  }
+}

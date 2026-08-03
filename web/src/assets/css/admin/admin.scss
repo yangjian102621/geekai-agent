@@ -1,0 +1,61 @@
+#app {
+  .card-body {
+    // 搜索样式
+    .search-container {
+      padding-bottom: 1rem;
+      display: flex;
+      flex-flow: row;
+
+      .search-item {
+        display: flex;
+        flex-flow: column;
+        justify-content: end;
+
+        .el-input {
+          max-width: 200px;
+        }
+
+        .form-label {
+          text-align: left;
+          font-weight: 600 !important;
+        }
+
+        .el-button {
+          padding: 8px 10px;
+        }
+      }
+
+      .search-item:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .data-table {
+      td,
+      th {
+        vertical-align: middle;
+        line-height: 1.462;
+        font-weight: 500;
+      }
+    }
+
+    .icon-copy {
+      cursor: pointer;
+    }
+
+    .pagination {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
+
+// 表格横向滚动和表头不换行通用样式
+.table-responsive {
+  overflow-x: auto;
+}
+
+:deep(.el-table th .cell) {
+  white-space: nowrap;
+}

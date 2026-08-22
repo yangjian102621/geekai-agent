@@ -220,7 +220,7 @@ CREATE TABLE `geekai_users` (
   `salt` char(12) NOT NULL COMMENT '密码盐',
   `scores` int NOT NULL DEFAULT '0' COMMENT '剩余积分',
   `expired_time` int NOT NULL COMMENT '用户过期时间',
-  `status` tinyint(1) NOT NULL COMMENT '当前状态',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '兼容旧版用户状态',
   `last_login_at` int NOT NULL COMMENT '最后登录时间',
   `vip` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否会员',
   `last_login_ip` char(16) NOT NULL COMMENT '最后登录 IP',

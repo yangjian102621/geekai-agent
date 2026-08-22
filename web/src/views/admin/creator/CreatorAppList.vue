@@ -68,13 +68,9 @@
               ></i>
             </template>
           </el-table-column>
-          <el-table-column label="API Token">
+          <el-table-column label="API Token（不回显）">
             <template #default="{ row }">
-              <span>{{ substr(row.configs.token, 10) }}</span>
-              <i
-                class="iconfont icon-copy ms-1 mt-1"
-                :data-clipboard-text="row.configs.token"
-              ></i>
+              <span>已隐藏，编辑时留空保持不变</span>
             </template>
           </el-table-column>
           <el-table-column label="上架状态">

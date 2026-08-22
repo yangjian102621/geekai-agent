@@ -23,13 +23,15 @@ import (
 
 type CreatorAppHandler struct {
 	handler.BaseHandler
-	appService *service.AppService
+	appService       *service.AppService
+	appConfigService *service.AppConfigService
 }
 
-func NewCreatorAppHandler(app *core.AppServer, db *gorm.DB, appService *service.AppService) *CreatorAppHandler {
+func NewCreatorAppHandler(app *core.AppServer, db *gorm.DB, appService *service.AppService, appConfigService *service.AppConfigService) *CreatorAppHandler {
 	return &CreatorAppHandler{
-		BaseHandler: handler.BaseHandler{DB: db, App: app},
-		appService:  appService,
+		BaseHandler:      handler.BaseHandler{DB: db, App: app},
+		appService:       appService,
+		appConfigService: appConfigService,
 	}
 }
 
@@ -92,12 +94,13 @@ func (h *CreatorAppHandler) List(c *gin.Context) {
 			continue
 		}
 		if app.Configs != "" {
-			err = utils.JsonDecode(app.Configs, &appVo.Configs)
+			err = h.appConfigService.Decode(app.Configs, &appVo.Configs)
 			if err != nil {
 				logger.Error(err)
 				continue
 			}
 		}
+		appVo.Configs = h.appConfigService.Mask(appVo.Configs)
 		appVo.Id = app.Id
 		appVo.CreatedAt = app.CreatedAt.Unix()
 		appVo.UpdatedAt = app.UpdatedAt.Unix()

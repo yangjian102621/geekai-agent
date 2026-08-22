@@ -21,6 +21,7 @@ type AppConfig struct {
 	Redis        RedisConfig // redis 连接信息
 	TikaHost     string      // TiKa 服务器地址
 	GeekApiHost  string      // GeekAI API 服务器地址
+	AppConfigKey string      // 应用配置加密密钥
 }
 
 type RedisConfig struct {

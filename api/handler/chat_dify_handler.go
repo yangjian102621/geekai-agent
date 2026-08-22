@@ -12,14 +12,13 @@ import (
 	"geekai/service/dify"
 	"geekai/store/model"
 	"geekai/store/vo"
-	"geekai/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h *ChatHandler) difyMessage(c *gin.Context, app model.App, data ChatInput, userId uint) {
 	var appConfig vo.AppConfig
-	err := utils.JsonDecode(app.Configs, &appConfig)
+	err := h.appConfigService.Decode(app.Configs, &appConfig)
 	if err != nil {
 		pushMessage(c, "error", "解析智能体参数失败："+err.Error())
 		return

@@ -153,7 +153,7 @@ func (h *ChatHandler) cozeMessage(c *gin.Context, app model.App, data ChatInput,
 	var chatItem model.ChatItem
 	h.DB.Where("chat_id", data.ChatId).First(&chatItem)
 	var appConfig vo.AppConfig
-	err := utils.JsonDecode(app.Configs, &appConfig)
+	err := h.appConfigService.Decode(app.Configs, &appConfig)
 	if err != nil {
 		pushMessage(c, ChatEventError, "应用配置解析出错！")
 		return
@@ -330,7 +330,7 @@ func (h *ChatHandler) cozeMessage(c *gin.Context, app model.App, data ChatInput,
 // 取消进行中的对话
 func (h *ChatHandler) cozeCancelSession(app model.App, data ChatInput) {
 	var appConfig vo.AppConfig
-	err := utils.JsonDecode(app.Configs, &appConfig)
+	err := h.appConfigService.Decode(app.Configs, &appConfig)
 	if err != nil {
 		logger.Error(err)
 		return

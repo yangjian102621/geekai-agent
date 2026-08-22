@@ -176,11 +176,12 @@ mkdir -p conf/mysql logs/mysql logs/nginx data/mysql/data data/redis static
 cp .env.example .env
 ```
 
-编辑 `.env`，分别设置 MySQL、Redis 密码、两个会话密钥和初始管理员账号。管理员密码不得少于 12 位。Compose 会通过环境变量把这些值注入 API，不需要把密钥写入受版本控制的 TOML 文件。
+编辑 `.env`，分别设置 MySQL、Redis 密码、两个会话密钥、应用配置加密密钥和初始管理员账号。管理员密码不得少于 12 位，`APP_CONFIG_KEY` 不得少于 16 位且服务重启时必须保持不变。Compose 会通过环境变量把这些值注入 API，不需要把密钥写入受版本控制的 TOML 文件。
 
 可使用 OpenSSL 生成会话密钥：
 
 ```bash
+openssl rand -hex 32
 openssl rand -hex 32
 openssl rand -hex 32
 ```

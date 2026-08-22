@@ -30,25 +30,27 @@ import (
 
 type AppHandler struct {
 	handler.BaseHandler
-	redis          *redis.Client
-	captcha        *service.CaptchaService
-	cozeService    *service.CozeService
-	uploader       *oss.UploaderManager
-	sysConfig      *types.SystemConfig
-	licenseService *service.LicenseService
-	appService     *service.AppService
+	redis            *redis.Client
+	captcha          *service.CaptchaService
+	cozeService      *service.CozeService
+	uploader         *oss.UploaderManager
+	sysConfig        *types.SystemConfig
+	licenseService   *service.LicenseService
+	appService       *service.AppService
+	appConfigService *service.AppConfigService
 }
 
-func NewAppHandler(app *core.AppServer, db *gorm.DB, client *redis.Client, captcha *service.CaptchaService, cozeService *service.CozeService, uploader *oss.UploaderManager, sysConfig *types.SystemConfig, licenseService *service.LicenseService, appService *service.AppService) *AppHandler {
+func NewAppHandler(app *core.AppServer, db *gorm.DB, client *redis.Client, captcha *service.CaptchaService, cozeService *service.CozeService, uploader *oss.UploaderManager, sysConfig *types.SystemConfig, licenseService *service.LicenseService, appService *service.AppService, appConfigService *service.AppConfigService) *AppHandler {
 	return &AppHandler{
-		BaseHandler:    handler.BaseHandler{DB: db, App: app},
-		redis:          client,
-		captcha:        captcha,
-		cozeService:    cozeService,
-		uploader:       uploader,
-		sysConfig:      sysConfig,
-		licenseService: licenseService,
-		appService:     appService,
+		BaseHandler:      handler.BaseHandler{DB: db, App: app},
+		redis:            client,
+		captcha:          captcha,
+		cozeService:      cozeService,
+		uploader:         uploader,
+		sysConfig:        sysConfig,
+		licenseService:   licenseService,
+		appService:       appService,
+		appConfigService: appConfigService,
 	}
 }
 
@@ -96,13 +98,35 @@ func (h *AppHandler) Save(c *gin.Context) {
 		return
 	}
 
+	configs := data.Configs
+	if data.Id > 0 {
+		var existing model.App
+		if err := h.DB.Select("configs").First(&existing, data.Id).Error; err != nil {
+			resp.ERROR(c, "获取应用配置失败："+err.Error())
+			return
+		}
+		var current vo.AppConfig
+		if existing.Configs != "" {
+			if err := h.appConfigService.Decode(existing.Configs, &current); err != nil {
+				resp.ERROR(c, "解析原应用配置失败："+err.Error())
+				return
+			}
+		}
+		configs = h.appConfigService.MergeSecrets(current, configs)
+	}
+	encryptedConfigs, err := h.appConfigService.Encode(configs)
+	if err != nil {
+		resp.ERROR(c, "加密应用配置失败："+err.Error())
+		return
+	}
+
 	app := model.App{
 		Name:          data.Name,
 		Type:          types.AppType(data.Type),
 		Enabled:       data.Enabled,
 		Score:         data.Score,
 		Icon:          data.Icon,
-		Configs:       utils.JsonEncode(data.Configs),
+		Configs:       encryptedConfigs,
 		Params:        utils.JsonEncode(data.Params),
 		BillingMode:   data.BillingMode,
 		BillingConfig: utils.JsonEncode(data.BillingConfig),
@@ -113,10 +137,10 @@ func (h *AppHandler) Save(c *gin.Context) {
 
 	if app.Type == types.AppCoze {
 		_, err := h.cozeService.GetAccessToken(&types.CozeApiConfig{
-			ApiUrl:      data.Configs.ApiUrl,
-			AppId:       data.Configs.AppId,
-			PublicKeyID: data.Configs.PublicKeyID,
-			PrivateKey:  data.Configs.PrivateKey,
+			ApiUrl:      configs.ApiUrl,
+			AppId:       configs.AppId,
+			PublicKeyID: configs.PublicKeyID,
+			PrivateKey:  configs.PrivateKey,
 		})
 		if err != nil {
 			resp.ERROR(c, "获取Coze授权失败: "+err.Error())
@@ -130,7 +154,6 @@ func (h *AppHandler) Save(c *gin.Context) {
 		return
 	}
 
-	var err error
 	if data.Id > 0 {
 		err = h.DB.Model(&model.App{}).Select("name", "type", "enabled", "configs", "params", "score", "icon", "summary", "cid", "billing_mode", "billing_config").Where("id", data.Id).Updates(&app).Error
 	} else {
@@ -264,12 +287,13 @@ func (h *AppHandler) List(c *gin.Context) {
 		}
 		appVo.Params = []vo.WorkflowParam{}
 		if app.Configs != "" {
-			err = utils.JsonDecode(app.Configs, &appVo.Configs)
+			err = h.appConfigService.Decode(app.Configs, &appVo.Configs)
 			if err != nil {
 				logger.Error(err)
 				continue
 			}
 		}
+		appVo.Configs = h.appConfigService.Mask(appVo.Configs)
 		if app.Params != "" {
 			err = utils.JsonDecode(app.Params, &appVo.Params)
 			if err != nil {
@@ -368,13 +392,18 @@ func (h *AppHandler) ImportCozeAgents(c *gin.Context) {
 		err := h.DB.Where("type = ? AND bot_id = ?", types.AppCoze, agent.BotID).First(&existingApp).Error
 		if err == nil || existingApp.Id > 0 {
 			// 已存在，则更新秘钥信息
-			existingApp.Configs = utils.JsonEncode(vo.AppConfig{
+			configs := vo.AppConfig{
 				ApiUrl:      cozeConfig.ApiUrl,
 				AppId:       cozeConfig.AppId,
 				PublicKeyID: cozeConfig.PublicKeyID,
 				PrivateKey:  cozeConfig.PrivateKey,
 				BotId:       agent.BotID,
-			})
+			}
+			existingApp.Configs, err = h.appConfigService.Encode(configs)
+			if err != nil {
+				resp.ERROR(c, "加密应用配置失败："+err.Error())
+				return
+			}
 			h.DB.Save(&existingApp)
 			continue
 		}
@@ -402,11 +431,16 @@ func (h *AppHandler) ImportCozeAgents(c *gin.Context) {
 			BotId:     agent.BotID,
 			Score:     1,
 			Icon:      icon,
-			Configs:   utils.JsonEncode(configs),
+			Configs:   "",
 			Summary:   agent.Description,
 			Cid:       agent.Cid,
 			Check:     vo.CheckStatusPass,
 			CheckNote: "管理员导入",
+		}
+		app.Configs, err = h.appConfigService.Encode(configs)
+		if err != nil {
+			resp.ERROR(c, "加密应用配置失败："+err.Error())
+			return
 		}
 
 		if err := h.DB.Create(&app).Error; err != nil {

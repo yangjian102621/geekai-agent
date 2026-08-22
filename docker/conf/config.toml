@@ -1,5 +1,6 @@
 Listen = "0.0.0.0:6789"
 MysqlDns = ""
+AppConfigKey = ""
 
 [Session]
   SecretKey = ""

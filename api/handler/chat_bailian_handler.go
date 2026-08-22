@@ -12,7 +12,7 @@ import (
 
 func (h *ChatHandler) bailianMessage(c *gin.Context, app model.App, data ChatInput, userId uint) {
 	var appConfig vo.AppConfig
-	err := utils.JsonDecode(app.Configs, &appConfig)
+	err := h.appConfigService.Decode(app.Configs, &appConfig)
 	if err != nil {
 		pushMessage(c, ChatEventError, "解析智能体参数失败："+err.Error())
 		return

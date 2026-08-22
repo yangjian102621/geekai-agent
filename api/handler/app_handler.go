@@ -73,13 +73,8 @@ func (h *AppHandler) List(c *gin.Context) {
 		if err != nil {
 			continue
 		}
-		if app.Configs != "" {
-			err = utils.JsonDecode(app.Configs, &appVo.Configs)
-			if err != nil {
-				logger.Error(err)
-				continue
-			}
-		}
+		// 应用配置包含第三方密钥，公开接口只返回应用元数据。
+		appVo.Configs = vo.AppConfig{}
 		appVo.CreatedAt = app.CreatedAt.Unix()
 		appVo.UpdatedAt = app.UpdatedAt.Unix()
 		appVos = append(appVos, appVo)
@@ -106,13 +101,8 @@ func (h *AppHandler) HotApps(c *gin.Context) {
 		if err != nil {
 			continue
 		}
-		if app.Configs != "" {
-			err = utils.JsonDecode(app.Configs, &appVo.Configs)
-			if err != nil {
-				logger.Error(err)
-				continue
-			}
-		}
+		// 热门应用接口同样是公开接口，禁止返回应用密钥。
+		appVo.Configs = vo.AppConfig{}
 		appVo.CreatedAt = app.CreatedAt.Unix()
 		appVo.UpdatedAt = app.UpdatedAt.Unix()
 		appVos = append(appVos, appVo)

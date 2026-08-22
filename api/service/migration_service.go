@@ -21,11 +21,12 @@ import (
 
 // MigrationService 数据迁移服务
 type MigrationService struct {
-	db *gorm.DB
+	db               *gorm.DB
+	appConfigService *AppConfigService
 }
 
-func NewMigrationService(db *gorm.DB) *MigrationService {
-	return &MigrationService{db: db}
+func NewMigrationService(db *gorm.DB, appConfigService *AppConfigService) *MigrationService {
+	return &MigrationService{db: db, appConfigService: appConfigService}
 }
 
 // Migrate 执行数据迁移
@@ -124,6 +125,10 @@ func initialAdminCredentials() (string, string, error) {
 // runVersionMigrations 执行版本化的迁移操作
 // 每个版本的字段删除操作都在独立的代码块中
 func (s *MigrationService) runVersionMigrations() error {
+	if err := s.migrateAppConfigs(); err != nil {
+		return err
+	}
+
 	// ==================== Version 1.0.0 ====================
 	// 版本 1.0.5 的字段删除操作
 	// 示例：删除某个表的某个字段
@@ -131,5 +136,28 @@ func (s *MigrationService) runVersionMigrations() error {
 	// 	s.db.Migrator().DropColumn(&model.App{}, "old_field")
 	// }
 
+	return nil
+}
+
+// migrateAppConfigs 将升级前明文保存的应用配置迁移为加密格式。
+func (s *MigrationService) migrateAppConfigs() error {
+	var apps []model.App
+	if err := s.db.Select("id", "configs").Find(&apps).Error; err != nil {
+		return fmt.Errorf("读取应用配置失败: %w", err)
+	}
+
+	for _, app := range apps {
+		if strings.TrimSpace(app.Configs) == "" || strings.HasPrefix(app.Configs, encryptedAppConfigPrefix) {
+			continue
+		}
+		encrypted, err := s.appConfigService.EncryptRaw(app.Configs)
+		if err != nil {
+			return fmt.Errorf("加密应用 %d 的配置失败: %w", app.Id, err)
+		}
+		if err := s.db.Model(&model.App{}).Where("id = ?", app.Id).Update("configs", encrypted).Error; err != nil {
+			return fmt.Errorf("保存应用 %d 的加密配置失败: %w", app.Id, err)
+		}
+		logger.Infof("已迁移应用 %d 的配置为加密格式", app.Id)
+	}
 	return nil
 }

@@ -143,6 +143,7 @@ func main() {
 		fx.Provide(service.NewUserService),
 		// 应用服务
 		fx.Provide(service.NewAppService),
+		fx.Provide(service.NewAppConfigService),
 		fx.Provide(service.NewSnowflake),
 		fx.Provide(service.NewLicenseService),
 		fx.Invoke(func(s *core.AppServer, ls *service.LicenseService) {

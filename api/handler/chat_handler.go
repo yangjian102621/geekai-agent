@@ -36,13 +36,14 @@ type ChatSession struct {
 
 type ChatHandler struct {
 	BaseHandler
-	userService    *service.UserService
-	redis          *redis.Client
-	ChatSessions   map[string]ChatSession     // 业务 ChatId -> ChatSession
-	ChatContexts   *types.LMap[string, []any] // 聊天上下文 Map [chatId] => []Message
-	liceseService  *service.LicenseService
-	cozeService    *service.CozeService
-	creatorService *service.CreatorService
+	userService      *service.UserService
+	redis            *redis.Client
+	ChatSessions     map[string]ChatSession     // 业务 ChatId -> ChatSession
+	ChatContexts     *types.LMap[string, []any] // 聊天上下文 Map [chatId] => []Message
+	liceseService    *service.LicenseService
+	cozeService      *service.CozeService
+	creatorService   *service.CreatorService
+	appConfigService *service.AppConfigService
 }
 
 var (
@@ -67,16 +68,18 @@ func NewChatHandler(
 	licenseService *service.LicenseService,
 	cozeService *service.CozeService,
 	creatorService *service.CreatorService,
+	appConfigService *service.AppConfigService,
 ) *ChatHandler {
 	return &ChatHandler{
-		BaseHandler:    BaseHandler{App: app, DB: db},
-		userService:    userService,
-		redis:          redis,
-		ChatSessions:   make(map[string]ChatSession),
-		ChatContexts:   types.NewLMap[string, []any](),
-		liceseService:  licenseService,
-		cozeService:    cozeService,
-		creatorService: creatorService,
+		BaseHandler:      BaseHandler{App: app, DB: db},
+		userService:      userService,
+		redis:            redis,
+		ChatSessions:     make(map[string]ChatSession),
+		ChatContexts:     types.NewLMap[string, []any](),
+		liceseService:    licenseService,
+		cozeService:      cozeService,
+		creatorService:   creatorService,
+		appConfigService: appConfigService,
 	}
 }
 

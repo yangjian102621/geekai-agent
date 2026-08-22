@@ -80,6 +80,9 @@ func applyEnvOverrides(config *types.AppConfig) {
 	if value := os.Getenv("GEEKAI_ADMIN_SESSION_SECRET"); value != "" {
 		config.AdminSession.SecretKey = value
 	}
+	if value := os.Getenv("GEEKAI_APP_CONFIG_KEY"); value != "" {
+		config.AppConfigKey = value
+	}
 }
 
 func SaveConfig(config *types.AppConfig) error {

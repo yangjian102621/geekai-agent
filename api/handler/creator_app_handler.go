@@ -18,13 +18,15 @@ import (
 
 type CreatorAppHandler struct {
 	BaseHandler
-	appService *service.AppService
+	appService       *service.AppService
+	appConfigService *service.AppConfigService
 }
 
-func NewCreatorAppHandler(app *core.AppServer, db *gorm.DB, appService *service.AppService) *CreatorAppHandler {
+func NewCreatorAppHandler(app *core.AppServer, db *gorm.DB, appService *service.AppService, appConfigService *service.AppConfigService) *CreatorAppHandler {
 	return &CreatorAppHandler{
-		BaseHandler: BaseHandler{App: app, DB: db},
-		appService:  appService,
+		BaseHandler:      BaseHandler{App: app, DB: db},
+		appService:       appService,
+		appConfigService: appConfigService,
 	}
 }
 
@@ -93,10 +95,11 @@ func (h *CreatorAppHandler) List(c *gin.Context) {
 		}
 		item.Params = []vo.WorkflowParam{}
 		if app.Configs != "" {
-			if err = utils.JsonDecode(app.Configs, &item.Configs); err != nil {
+			if err = h.appConfigService.Decode(app.Configs, &item.Configs); err != nil {
 				logger.Error(err)
 			}
 		}
+		item.Configs = h.appConfigService.Mask(item.Configs)
 		if app.Params != "" {
 			if err = utils.JsonDecode(app.Params, &item.Params); err != nil {
 				logger.Error(err)
@@ -135,6 +138,28 @@ func (h *CreatorAppHandler) SaveApp(c *gin.Context) {
 		return
 	}
 
+	configs := data.Configs
+	if data.Id > 0 {
+		var existing model.App
+		if err := h.DB.Select("configs").First(&existing, data.Id).Error; err != nil {
+			resp.ERROR(c, "获取应用配置失败："+err.Error())
+			return
+		}
+		var current vo.AppConfig
+		if existing.Configs != "" {
+			if err := h.appConfigService.Decode(existing.Configs, &current); err != nil {
+				resp.ERROR(c, "解析原应用配置失败："+err.Error())
+				return
+			}
+		}
+		configs = h.appConfigService.MergeSecrets(current, configs)
+	}
+	encryptedConfigs, err := h.appConfigService.Encode(configs)
+	if err != nil {
+		resp.ERROR(c, "加密应用配置失败："+err.Error())
+		return
+	}
+
 	app := model.App{
 		CreatorId: h.Creator.Id,
 		Name:      data.Name,
@@ -143,7 +168,7 @@ func (h *CreatorAppHandler) SaveApp(c *gin.Context) {
 		Score:     data.Score,
 		Icon:      data.Icon,
 		Summary:   data.Summary,
-		Configs:   utils.JsonEncode(data.Configs),
+		Configs:   encryptedConfigs,
 		Params:    utils.JsonEncode(data.Params),
 		Cid:       data.Cid,
 		Check:     int8(vo.CheckStatusPending),
@@ -240,6 +265,7 @@ func (h *CreatorAppHandler) GetCreatorApps(c *gin.Context) {
 		}
 		item.CreatedAt = app.CreatedAt.Unix()
 		item.UpdatedAt = app.UpdatedAt.Unix()
+		item.Configs = vo.AppConfig{}
 		items = append(items, item)
 	}
 

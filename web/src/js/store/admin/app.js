@@ -85,8 +85,6 @@ export const useAppStore = defineStore('admin-app', () => {
         res.data.items.forEach((item) => {
           if (!item.configs.api_url) item.configs.api_url = ''
           if (!item.configs.token) item.configs.token = ''
-          if (item.type === 'coze')
-            item.configs.token = item.configs.public_key_id
           if (item.type === 'openai') {
             item.configs.model_name = item.configs.model_name || 'gpt-3.5-turbo'
             item.configs.system_prompt = item.configs.system_prompt || ''

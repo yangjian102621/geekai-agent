@@ -13,3 +13,6 @@ ALTER TABLE `geekai_apps` ADD `bot_id` VARCHAR(30) NOT NULL COMMENT '机器人ID
 -- 扣费模式功能
 ALTER TABLE `geekai_apps` ADD `billing_mode` VARCHAR(20) NOT NULL DEFAULT 'immediate' COMMENT '扣费模式：immediate立即扣费，file_suffix文件后缀触发，string_marker字符串标记触发' AFTER `score`;
 ALTER TABLE `geekai_apps` ADD `billing_config` TEXT NULL COMMENT '扣费配置JSON' AFTER `billing_mode`;
+
+-- 兼容当前代码使用 enabled、旧表保留 status 的用户表结构
+ALTER TABLE `geekai_users` MODIFY `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '兼容旧版用户状态';

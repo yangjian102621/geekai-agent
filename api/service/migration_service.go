@@ -124,6 +124,11 @@ func initialAdminCredentials() (string, string, error) {
 // runVersionMigrations 执行版本化的迁移操作
 // 每个版本的字段删除操作都在独立的代码块中
 func (s *MigrationService) runVersionMigrations() error {
+	// 兼容旧版用户表：当前代码使用 enabled，旧表仍可能保留必填的 status 字段。
+	// 新增用户时不会显式写入该旧字段，因此为其补充启用状态默认值。
+	if err := s.ensureLegacyUserStatusDefault(); err != nil {
+		return err
+	}
 	// ==================== Version 1.0.0 ====================
 	// 版本 1.0.5 的字段删除操作
 	// 示例：删除某个表的某个字段
@@ -131,5 +136,31 @@ func (s *MigrationService) runVersionMigrations() error {
 	// 	s.db.Migrator().DropColumn(&model.App{}, "old_field")
 	// }
 
+	return nil
+}
+
+// ensureLegacyUserStatusDefault 兼容旧版 geekai_users.status 字段。
+func (s *MigrationService) ensureLegacyUserStatusDefault() error {
+	var defaultValue string
+	result := s.db.Raw(`
+		SELECT COALESCE(COLUMN_DEFAULT, '')
+		FROM information_schema.COLUMNS
+		WHERE TABLE_SCHEMA = DATABASE()
+		  AND TABLE_NAME = 'geekai_users'
+		  AND COLUMN_NAME = 'status'
+	`).Scan(&defaultValue)
+	if result.Error != nil {
+		return fmt.Errorf("检查旧版用户状态字段失败: %w", result.Error)
+	}
+
+	// 当前数据库没有旧字段，或字段已有默认值时无需处理。
+	if result.RowsAffected == 0 || defaultValue == "1" {
+		return nil
+	}
+
+	if err := s.db.Exec("ALTER TABLE `geekai_users` MODIFY COLUMN `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '兼容旧版用户状态'").Error; err != nil {
+		return fmt.Errorf("修复旧版用户状态字段失败: %w", err)
+	}
+	logger.Info("已为 geekai_users.status 补充默认启用状态")
 	return nil
 }
